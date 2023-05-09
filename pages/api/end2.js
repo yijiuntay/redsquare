@@ -2,19 +2,19 @@ import { getProtocol } from "../../utils/vercel-utils";
 
 export default async function handler(req, res) {
   try {
-    const intervalId = setInterval(async () => {
+    while (true) {
+      //loop until lastChar is an odd number
       const response = await fetch(
         getProtocol() + req.headers.host + "/api/hello"
       );
       const data = await response.json();
-      const lastChar = parseInt(data.hash.charAt(data.hash.length - 1));
+      let lastChar = parseInt(data.hash.charAt(data.hash.length - 1));
       if (!isNaN(lastChar) && lastChar % 2 !== 0) {
-        clearInterval(intervalId);
-        res.status(200).json({ message: "Success" });
+        return res.status(200).json({ message: "Success" });
       }
-    }, 100);
+    }
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error });
+    console.log(error);
+    res.status(500).send({ error });
   }
 }
